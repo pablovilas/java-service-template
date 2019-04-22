@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'jacoco'
+    id 'pmd'
+    id 'com.github.spotbugs' version '1.7.1'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+ext {
+    junitVersion = '4.12'
+    sparkJavaVersion = '2.9.0'
+    guiceVersion = '4.2.2'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // api: Those dependencies are exported to consumers, that is to say found on their compile classpath.
+    // implementation: Those dependencies are used internally, and not exposed to consumers on their own compile classpath.
+    implementation "com.sparkjava:spark-core:$sparkJavaVersion"
+    implementation "com.google.inject:guice:$guiceVersion:no_aop"
+    // Use JUnit test framework
+    testImplementation "junit:junit:$junitVersion"
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+task analize(type: GradleBuild) {
+    tasks = ['pmdMain', 'checkstyleMain', 'spotbugsMain']
+}
+
+test.finalizedBy jacocoTestReport
+tasks.build.dependsOn tasks.shadowJar
+
+jacocoTestReport {
+    reports {
+        xml.enabled = false
+        csv.enabled = false
+    }
+}
+
+mainClassName = 'service.template.App'

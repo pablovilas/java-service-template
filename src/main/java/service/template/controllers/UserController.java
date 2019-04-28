@@ -1,35 +1,40 @@
 package service.template.controllers;
 
-import com.google.inject.Inject;
+import service.template.models.User;
 import service.template.services.UserService;
 import spark.Request;
-import spark.Response;
 
-public class UserController {
+import javax.inject.Inject;
+import java.util.List;
+
+public class UserController extends RestfulController<User> {
+
+  private UserService userService;
 
   @Inject
-  static UserService userService;
-
-  public static Response list(Request request, Response response) {
-    System.out.println("list");
-    return response;
+  public UserController(UserService userService) {
+    super();
+    this.userService = userService;
   }
 
-  public static Response create(Request request, Response response) {
-    return response;
+  public List<User> index(Request request) {
+    return userService.list();
   }
 
-  public static Response get(Request request, Response response) {
+  public User save(Request request) {
+    return userService.create(new User());
+  }
+
+  public User show(Request request) {
     Long id = Long.parseLong(request.params("id"));
-    userService.get(id);
-    return response;
+    return userService.get(id);
   }
 
-  public static Response update(Request request, Response response) {
-    return response;
+  public User update(Request request) {
+    return userService.update(new User());
   }
 
-  public static Response delete(Request request, Response response) {
-    return response;
+  public User delete(Request request) {
+    return userService.delete(new User());
   }
 }

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'idea'
     id 'application'
     id 'checkstyle'
     id 'jacoco'
@@ -11,7 +12,9 @@ plugins {
 ext {
     junitVersion = '4.12'
     sparkJavaVersion = '2.9.0'
-    guiceVersion = '4.2.2'
+    daggerVersion = '2.22.1'
+    jsoniterVersion = '0.9.19'
+    slf4jVersion = '1.7.25'
 }
 
 repositories {
@@ -22,9 +25,20 @@ dependencies {
     // api: Those dependencies are exported to consumers, that is to say found on their compile classpath.
     // implementation: Those dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation "com.sparkjava:spark-core:$sparkJavaVersion"
-    implementation "com.google.inject:guice:$guiceVersion:no_aop"
+    implementation "com.jsoniter:jsoniter:$jsoniterVersion"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "org.slf4j:slf4j-simple:$slf4jVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     // Use JUnit test framework
     testImplementation "junit:junit:$junitVersion"
+}
+
+sourceSets.main.java.srcDir new File(buildDir, 'generated/sources/annotationProcessor/java/main')
+idea {
+    module {
+        // Marks the already(!) added srcDir as "generated"
+        generatedSourceDirs += file('build/generated/sources/annotationProcessor/java/main')
+    }
 }
 
 tasks.withType(Checkstyle) {

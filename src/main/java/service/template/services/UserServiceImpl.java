@@ -1,30 +1,43 @@
 package service.template.services;
 
 import service.template.models.User;
+import service.template.repositories.UserRepository;
 
-import java.util.ArrayList;
+import javax.inject.Inject;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
+  private UserRepository userRepository;
+
+  @Inject
+  public UserServiceImpl(UserRepository userRepository) {
+    super();
+    this.userRepository = userRepository;
+  }
+
   public List<User> list() {
-    return new ArrayList<>();
+    return userRepository.list();
   }
 
   public User create(User user) {
-    return user;
+    return userRepository.create(user);
   }
 
   public User get(Long id) {
-    return new User();
+    return userRepository.get(id);
   }
 
   public User update(User user) {
-    return new User();
+    return userRepository.update(user);
   }
 
   public User delete(User user) {
-    return user;
+    return userRepository.delete(user);
+  }
+
+  public User delete(Long id) {
+    return userRepository.delete(id);
   }
 
 }

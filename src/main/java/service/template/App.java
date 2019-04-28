@@ -1,25 +1,15 @@
 package service.template;
 
-import service.template.controllers.UserController;
-import service.template.services.injector.AppInjector;
-
-import static spark.Spark.*;
+import service.template.server.AppComponent;
+import service.template.server.DaggerAppComponent;
+import service.template.server.Server;
 
 public class App {
 
   public static void main(String[] args) {
-    initServer();
+    AppComponent component = DaggerAppComponent.builder().build();
+    Server server = new Server(component);
+    server.start();
   }
 
-  private static void initServer() {
-    AppInjector.init();
-    port(8080);
-    path("/users", () -> {
-      get("/",       UserController::list);
-      post("/",      UserController::create);
-      get("/:id",    UserController::get);
-      put("/:id",    UserController::update);
-      delete("/:id", UserController::delete);
-    });
-  }
 }
